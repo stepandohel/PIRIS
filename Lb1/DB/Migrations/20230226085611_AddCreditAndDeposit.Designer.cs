@@ -4,6 +4,7 @@ using Lb1.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lb1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230226085611_AddCreditAndDeposit")]
+    partial class AddCreditAndDeposit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,27 +24,6 @@ namespace Lb1.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Lb1.DB.Entites.ATM.CreditCard", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Number")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Pin")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CreditCards");
-                });
 
             modelBuilder.Entity("Lb1.DB.Entites.Bank.DepositList", b =>
                 {
@@ -113,9 +95,6 @@ namespace Lb1.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CreditCardId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CreditPlaneId")
                         .HasColumnType("int");
 
@@ -134,8 +113,6 @@ namespace Lb1.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("CreditCardId");
 
                     b.HasIndex("CreditPlaneId");
 
@@ -325,7 +302,7 @@ namespace Lb1.Migrations
                         .IsRequired();
 
                     b.HasOne("Lb1.DB.Entites.Bank.DepositPlane", "DepositPlane")
-                        .WithMany("DepositLists")
+                        .WithMany()
                         .HasForeignKey("DepositPlaneId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -343,21 +320,13 @@ namespace Lb1.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Lb1.DB.Entites.ATM.CreditCard", "CreditCard")
-                        .WithMany("CreditLists")
-                        .HasForeignKey("CreditCardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Lb1.DB.Entites.BankE.CreditE.CreditPlane", "CreditPlane")
-                        .WithMany("CreditLists")
+                        .WithMany()
                         .HasForeignKey("CreditPlaneId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Client");
-
-                    b.Navigation("CreditCard");
 
                     b.Navigation("CreditPlane");
                 });
@@ -387,21 +356,6 @@ namespace Lb1.Migrations
                     b.Navigation("MaritalStatus");
 
                     b.Navigation("Town");
-                });
-
-            modelBuilder.Entity("Lb1.DB.Entites.ATM.CreditCard", b =>
-                {
-                    b.Navigation("CreditLists");
-                });
-
-            modelBuilder.Entity("Lb1.DB.Entites.Bank.DepositPlane", b =>
-                {
-                    b.Navigation("DepositLists");
-                });
-
-            modelBuilder.Entity("Lb1.DB.Entites.BankE.CreditE.CreditPlane", b =>
-                {
-                    b.Navigation("CreditLists");
                 });
 
             modelBuilder.Entity("Lb1.DB.Entites.ClientE.Citizenship", b =>

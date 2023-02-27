@@ -1,4 +1,4 @@
-﻿namespace Lb1.DB.Entites
+﻿namespace Lb1.DB.Entites.ClientE
 {
     public class Town
     {

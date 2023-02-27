@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Lb1.DB;
-using Lb1.DB.Entites.ClientE;
-using Lb1.Modeles.Client;
+using Lb1.DB.Entites.Bank;
+using Lb1.Modeles.Deposite.DepositList;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,11 +9,11 @@ namespace Lb1.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ClientsController : ControllerBase
+    public class DepositeListController : ControllerBase
     {
         private readonly AppDbContext _appDbContext;
         private readonly IMapper _mapper;
-        public ClientsController(AppDbContext appDbContext, IMapper mapper)
+        public DepositeListController(AppDbContext appDbContext, IMapper mapper)
         {
             _appDbContext = appDbContext;
             _mapper = mapper;
@@ -22,33 +22,32 @@ namespace Lb1.Controllers
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var item = await _appDbContext.Clients.Include(x => x.Town)
-                .Include(x => x.Citizenship)
-                .Include(x => x.MaritalStatus)
+            var item = await _appDbContext.DepositLists
+                .Include(x => x.Client)
+                .Include(x => x.DepositPlane)
                 .ToListAsync();
-            var itemsView = _mapper.Map<List<ClientViewModel>>(item);
+            var itemsView = _mapper.Map<List<DepositListViewModel>>(item);
             return Ok(itemsView);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(int id)
         {
-            var item = await _appDbContext.Clients
-                .Include(x => x.Town)
-                .Include(x => x.Citizenship)
-                .Include(x => x.MaritalStatus)
+            var item = await _appDbContext.DepositLists
+                .Include(x => x.Client)
+                .Include(x => x.DepositPlane)
                 .FirstOrDefaultAsync(x => x.Id == id);
-            var itemView = _mapper.Map<ClientViewModel>(item);
+            var itemView = _mapper.Map<DepositListViewModel>(item);
             return Ok(itemView);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post(ClientPostModel clientPostModel)
+        public async Task<ActionResult> Post(DepositListPostModel depositListPostModel)
         {
-            if (clientPostModel is not null)
+            if (depositListPostModel is not null)
             {
-                var item = _mapper.Map<Client>(clientPostModel);
-                await _appDbContext.Set<Client>().AddAsync(item);
+                var item = _mapper.Map<DepositList>(depositListPostModel);
+                await _appDbContext.Set<DepositList>().AddAsync(item);
                 await _appDbContext.SaveChangesAsync();
                 return Ok();
             }
@@ -56,12 +55,12 @@ namespace Lb1.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(ClientPutModel clientPutModel)
+        public async Task<ActionResult> Put(DepositListPutModel depositListPutModel)
         {
-            if (clientPutModel is not null)
+            if (depositListPutModel is not null)
             {
-                var item = _mapper.Map<Client>(clientPutModel);
-                _appDbContext.Set<Client>().Update(item);
+                var item = _mapper.Map<DepositList>(depositListPutModel);
+                _appDbContext.Set<DepositList>().Update(item);
                 await _appDbContext.SaveChangesAsync();
                 return Ok();
             }
@@ -71,10 +70,10 @@ namespace Lb1.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var item = await _appDbContext.Clients.FindAsync(id);
+            var item = await _appDbContext.DepositLists.FindAsync(id);
             if (item is not null)
             {
-                _appDbContext.Set<Client>().Remove(item);
+                _appDbContext.Set<DepositList>().Remove(item);
                 await _appDbContext.SaveChangesAsync();
                 return NoContent();
             }

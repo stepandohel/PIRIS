@@ -1,9 +1,9 @@
-﻿namespace Lb1.DB.Entites
+﻿namespace Lb1.DB.Entites.ClientE
 {
-    public class MaritalStatus
+    public class Citizenship
     {
         public int Id { get; set; }
-        public string Status { get; set; }
+        public string Name { get; set; }
         public ICollection<Client> Clients { get; set; }
     }
 }
